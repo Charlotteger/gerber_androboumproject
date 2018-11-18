@@ -3,4 +3,8 @@
     <string name="title">C\'est de la bombe</string>
     <string name="copyright">\@Charlotte - 2018</string>
     <string name="start">Démarrer</string>
+    <string name="facebook_application_id" translatable="false">1809914232370472</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fb1809914232370472</string>
+    <string name="action_logout">Deconnection</string>
+    <string name="action_settings">Parametres</string>
 </resources>
