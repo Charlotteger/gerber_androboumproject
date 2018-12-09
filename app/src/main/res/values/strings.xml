@@ -1,10 +1,25 @@
 <resources>
     <string name="app_name">AndroboumProject</string>
     <string name="title">C\'est de la bombe</string>
-    <string name="copyright">\@Charlotte - 2018</string>
+    <string name="copyright" translatable="false">\@Charlotte - 2018</string>
     <string name="start">Démarrer</string>
     <string name="facebook_application_id" translatable="false">1809914232370472</string>
     <string name="facebook_login_protocol_scheme" translatable="false">fb1809914232370472</string>
     <string name="action_logout">Deconnection</string>
     <string name="action_settings">Parametres</string>
+    <string name="listButton">Liste des utilisateurs</string>
+    <string name="bombback">Renvoyer la bombe</string>
+    <string name="bombedText">Vous avez été bombé par </string>
+    <string name="target">cible</string>
+    <string name="source">attaquant</string>
+    <string name="resendBomb">Renvoyer la bombe</string>
+    <string name="nouserresponse">Pas de réponse de l\'utilisateur</string>
+    <string name="userbusy">L\'utilisateur est occupé</string>
+    <string name="cantbombme">Vous ne pouvez pas vous bomber vous même !</string>
+    <string name="bombexplosed">La bombe a explosé !</string>
+    <string name="win">Gagné !</string>
+    <string name="lost">Perdu !</string>
+    <string name="imageUploaded">image chargée</string>
+    <string name="filter_dialog_title">Filtrer utilisateurs</string>
+
 </resources>
