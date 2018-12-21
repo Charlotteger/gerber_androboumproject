@@ -1,11 +1,15 @@
 package com.example.android.androboumproject;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -22,6 +26,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -42,9 +48,12 @@ public class UserActivity extends AppCompatActivity {
     private boolean connectStatus = false;
     TextView textView;
     private Profil user = new Profil();
+    private FusedLocationProviderClient mFusedLocationClient;
+    private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -262,9 +271,51 @@ public class UserActivity extends AppCompatActivity {
             user.setUid(fuser.getUid());
             user.setEmail(fuser.getEmail());
             user.setConnected(true);
+            getLocation();
             AndroBoumApp.buildBomber(this);
         }
     }
+
+    private void getLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // on demande les permissions
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+            return;
+        }
+        mFusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {                 // L’objet Location contient la position asuf s’il est null
+                if (location != null) {
+
+                    Log.v("Androboum","Coordonnées GPS: Latitude=" +
+                            location.getLatitude() +
+                            " Longitude=" + location.getLongitude());
+                    user.setLatitude(location.getLatitude());
+                    user.setLongitude(location.getLongitude());
+                    updateProfil(user);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[],
+                                           int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_READ_CONTACTS: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // on est autorisé, donc on rappelle getLocation()
+                    getLocation();
+                } else {
+                    // on n'a pas l'autorisation donc on ne fait rien
+                }
+                return;
+            }
+        }
+    }
+
 
     private void updateProfil(Profil user){
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -272,6 +323,8 @@ public class UserActivity extends AppCompatActivity {
         ref.child("connected").setValue(true);
         ref.child("email").setValue(user.getEmail());
         ref.child("uid").setValue(user.getUid());
+        ref.child("latitude").setValue(user.getLatitude());
+        ref.child("longitude").setValue(user.getLongitude());
     }
 
 }
